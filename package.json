@@ -7,7 +7,7 @@
     "dev:frontend": "npm --prefix frontend run dev",
     "build:backend": "npm --prefix backend run build",
     "build:frontend": "npm --prefix frontend run build",
-    "build": "npm run build:backend && npm run build:frontend",
+    "build": "cd frontend && npm install --legacy-peer-deps && npm run build",
     "start:backend": "npm --prefix backend start",
     "start:frontend": "npm --prefix frontend run preview",
     "start": "npm run start:backend"
