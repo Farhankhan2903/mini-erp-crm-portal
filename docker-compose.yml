@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database Service
+  postgres:
+    image: postgres:16-alpine
+    container_name: minierp_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mini_erp_crm
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d mini_erp_crm']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Backend API Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: minierp_backend
+    restart: always
+    ports:
+      - '5001:5001'
+    environment:
+      PORT: 5001
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/mini_erp_crm?schema=public
+      JWT_SECRET: super-secret-jwt-key-production-change-me
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # 3. Frontend Web Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: minierp_frontend
+    restart: always
+    ports:
+      - '3000:80'
+    environment:
+      VITE_API_URL: http://localhost:5001/api/v1
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
