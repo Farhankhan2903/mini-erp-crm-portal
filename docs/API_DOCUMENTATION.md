@@ -258,17 +258,17 @@ Create a new product. SKU is auto-uppercased and must be unique.
 **Request Body**
 ```json
 {
-  "name": "Enterprise Server Rack 42U",
-  "sku": "srv-rack-42u",
-  "category": "IT Hardware",
-  "unitPrice": 149999.00,
-  "stock": 50,
-  "minimumStock": 10,
-  "warehouse": "Main Warehouse Bay A"
+  "name": "Polycab 3-Core Flexible Copper Cable 90m",
+  "sku": "elec-cbl-3c-90m",
+  "category": "Electrical Supplies",
+  "unitPrice": 4250.00,
+  "stock": 150,
+  "minimumStock": 20,
+  "warehouse": "Ahmedabad Central Depot"
 }
 ```
 
-**Response 201** — Created product (SKU stored as `SRV-RACK-42U`)  
+**Response 201** — Created product (SKU stored as `ELEC-CBL-3C-90M`)  
 **Error Codes**: `400` SKU already exists, `422` Validation error
 
 ---
