@@ -1,5 +1,25 @@
 import prisma from '../prisma';
 
+export interface RecentChallanItem {
+  id: string;
+  challanNumber: string;
+  status: string;
+  totalQuantity: number;
+  createdAt: Date;
+  customer: { id: string; name: string; businessName: string | null } | null;
+  createdBy: { id: string; name: string; role: string };
+}
+
+export interface RecentCustomerItem {
+  id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  customerType: string;
+  status: string;
+  createdAt: Date;
+}
+
 export interface DashboardMetricsResponse {
   cards: {
     totalCustomers: number;
@@ -9,8 +29,8 @@ export interface DashboardMetricsResponse {
     totalInventoryValue: number;
   };
   lists: {
-    recentChallans: any[];
-    recentCustomers: any[];
+    recentChallans: RecentChallanItem[];
+    recentCustomers: RecentCustomerItem[];
   };
 }
 

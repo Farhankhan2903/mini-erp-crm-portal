@@ -1,4 +1,4 @@
-import { StockMovement } from '@prisma/client';
+import { StockMovement, Prisma } from '@prisma/client';
 import { MovementType } from '../types/enums';
 import prisma from '../prisma';
 import { AppError } from '../middlewares/errorHandler';
@@ -78,7 +78,7 @@ export class StockService {
     const limit = options.limit || 10;
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: Prisma.StockMovementWhereInput = {};
     if (options.productId) where.productId = options.productId;
     if (options.movementType) where.movementType = options.movementType;
 

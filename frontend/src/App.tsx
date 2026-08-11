@@ -15,6 +15,7 @@ import { InventoryPage } from './pages/InventoryPage';
 import { SalesChallansPage } from './pages/SalesChallansPage';
 import { CreateChallanPage } from './pages/CreateChallanPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 export const App: React.FC = () => {
   return (
@@ -41,8 +42,8 @@ export const App: React.FC = () => {
               </Route>
             </Route>
 
-            {/* Fallback Catch-all Route */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            {/* Fallback 404 Route */}
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </AuthProvider>
       </ToastProvider>

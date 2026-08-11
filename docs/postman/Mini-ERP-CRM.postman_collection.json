@@ -1,0 +1,724 @@
+{
+  "info": {
+    "_postman_id": "b2f3a1c4-5d6e-7f8a-9b0c-1d2e3f4a5b6c",
+    "name": "Mini ERP + CRM Portal API",
+    "description": "Complete Postman Collection for the Mini ERP + CRM Operations Portal.\n\nIncludes all endpoints for:\n- Authentication (Login, Register, Profile)\n- Customer CRM (CRUD + Notes)\n- Product Catalog (CRUD)\n- Stock Movements (Log + History)\n- Sales Challans (Create + Status Workflow)\n- Dashboard Analytics\n\n**Demo credentials** — all roles share password `Admin@123`:\n- Admin: admin@minierp.com\n- Sales: sales@minierp.com\n- Warehouse: warehouse@minierp.com\n- Accounts: accounts@minierp.com\n\nRun the **Login - Admin** request first to auto-populate the `jwtToken` variable.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",    "value": "http://localhost:5001/api/v1", "type": "string" },
+    { "key": "jwtToken",   "value": "",                             "type": "string" },
+    { "key": "customerId", "value": "",                             "type": "string" },
+    { "key": "productId",  "value": "",                             "type": "string" },
+    { "key": "challanId",  "value": "",                             "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "description": "JWT-based authentication endpoints. Run Login first to capture the token.",
+      "item": [
+        {
+          "name": "Login — Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('jwtToken', res.data.token);",
+                  "    console.log('✅ JWT Token saved:', res.data.token.substring(0, 30) + '...');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@minierp.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+            "description": "Login with admin credentials. Automatically saves the JWT token to the `jwtToken` collection variable."
+          }
+        },
+        {
+          "name": "Login — Sales",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('jwtToken', res.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sales@minierp.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login — Warehouse",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"warehouse@minierp.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login — Accounts",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"accounts@minierp.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] },
+            "description": "Returns the authenticated user's profile. Requires a valid JWT token."
+          }
+        },
+        {
+          "name": "Register New User (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Staff Member\",\n  \"email\": \"newstaff@minierp.com\",\n  \"password\": \"Staff@123\",\n  \"role\": \"SALES\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] },
+            "description": "Admin-only endpoint to register a new user account. Roles: ADMIN, SALES, WAREHOUSE, ACCOUNTS."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Customer CRM",
+      "description": "Full CRUD operations for the Customer CRM module with pagination, search, and notes history.",
+      "item": [
+        {
+          "name": "List Customers (Paginated)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.length > 0) {",
+                  "    pm.collectionVariables.set('customerId', res.data[0].id);",
+                  "    console.log('✅ customerId saved:', res.data[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/customers?page=1&limit=10&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"],
+              "query": [
+                { "key": "page",       "value": "1" },
+                { "key": "limit",      "value": "10" },
+                { "key": "sortBy",     "value": "createdAt" },
+                { "key": "sortOrder",  "value": "desc" },
+                { "key": "search",     "value": "",    "disabled": true },
+                { "key": "status",     "value": "ACTIVE", "disabled": true },
+                { "key": "customerType","value": "CORPORATE", "disabled": true }
+              ]
+            },
+            "description": "List all customers with pagination, sorting, and optional filters. Saves the first customer ID."
+          }
+        },
+        {
+          "name": "Search Customers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/customers?search=Acme&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers"],
+              "query": [
+                { "key": "search", "value": "Acme" },
+                { "key": "page",   "value": "1" },
+                { "key": "limit",  "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", "{{customerId}}"]
+            },
+            "description": "Returns full customer detail including notes history and past sales challans."
+          }
+        },
+        {
+          "name": "Create Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('customerId', res.data.id);",
+                  "    console.log('✅ New customerId saved:', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Zenith Manufacturing Ltd\",\n  \"mobile\": \"+91 9123456780\",\n  \"email\": \"contact@zenithmfg.com\",\n  \"businessName\": \"Zenith Manufacturing Limited\",\n  \"gst\": \"27ZZZMF5432X1Z9\",\n  \"customerType\": \"WHOLESALE\",\n  \"address\": \"Plot 77, Industrial Area Phase 2, Pune, Maharashtra 411014\",\n  \"status\": \"PROSPECT\",\n  \"notes\": \"Interested in bulk server rack orders.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/customers", "host": ["{{baseUrl}}"], "path": ["customers"] },
+            "description": "Create a new customer. ADMIN and SALES roles only."
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\",\n  \"notes\": \"Converted from prospect to active client after first order.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", "{{customerId}}"]
+            }
+          }
+        },
+        {
+          "name": "Add Follow-Up Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Spoke with procurement manager. They require a demo next week.\",\n  \"followUpDate\": \"2026-08-25T10:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", "{{customerId}}", "notes"]
+            },
+            "description": "Appends a follow-up note to the customer's audit trail and updates the follow-up date."
+          }
+        },
+        {
+          "name": "Delete Customer (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["customers", "{{customerId}}"]
+            },
+            "description": "Permanently deletes a customer. Admin only. Returns 204 No Content on success."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Product Catalog",
+      "description": "Product catalog management. WAREHOUSE and ADMIN roles manage products.",
+      "item": [
+        {
+          "name": "List Products (Paginated)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.length > 0) {",
+                  "    pm.collectionVariables.set('productId', res.data[0].id);",
+                  "    console.log('✅ productId saved:', res.data[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/products?page=1&limit=10&sortBy=name&sortOrder=asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "page",      "value": "1" },
+                { "key": "limit",     "value": "10" },
+                { "key": "sortBy",    "value": "name" },
+                { "key": "sortOrder", "value": "asc" },
+                { "key": "category",  "value": "IT Hardware", "disabled": true },
+                { "key": "warehouse", "value": "",             "disabled": true },
+                { "key": "search",    "value": "",             "disabled": true },
+                { "key": "lowStock",  "value": "true",         "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Low-Stock Products (Alert Filter)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/products?lowStock=true&page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "lowStock", "value": "true" },
+                { "key": "page",     "value": "1" },
+                { "key": "limit",    "value": "10" }
+              ]
+            },
+            "description": "Returns only products where stock <= minimumStock. Used for re-order alerts."
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            },
+            "description": "Returns full product detail including the last 15 stock movement records."
+          }
+        },
+        {
+          "name": "Create Product (Warehouse / Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('productId', res.data.id);",
+                  "    console.log('✅ New productId saved:', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HP ProLiant DL380 Gen10 Server\",\n  \"sku\": \"SRV-HP-DL380-G10\",\n  \"category\": \"IT Hardware\",\n  \"unitPrice\": 299000.00,\n  \"stock\": 20,\n  \"minimumStock\": 5,\n  \"warehouse\": \"Main Warehouse Bay A\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/products", "host": ["{{baseUrl}}"], "path": ["products"] },
+            "description": "Create a new product. SKU must be unique (auto-uppercased). WAREHOUSE and ADMIN only."
+          }
+        },
+        {
+          "name": "Update Product (Warehouse / Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"unitPrice\": 285000.00,\n  \"minimumStock\": 8,\n  \"warehouse\": \"Secondary Bay C\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Product (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "{{productId}}"]
+            },
+            "description": "Permanently deletes a product. Admin only."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Stock Movements",
+      "description": "Inventory adjustment log. Records IN / OUT / ADJUSTMENT movements with full audit trail.",
+      "item": [
+        {
+          "name": "List Stock Movements (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/stock-movements?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["stock-movements"],
+              "query": [
+                { "key": "page",         "value": "1" },
+                { "key": "limit",        "value": "20" },
+                { "key": "productId",    "value": "",    "disabled": true },
+                { "key": "movementType", "value": "IN",  "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Log Stock IN",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 15,\n  \"movementType\": \"IN\",\n  \"reason\": \"Restocked from supplier PO-2026-0042\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/stock-movements", "host": ["{{baseUrl}}"], "path": ["stock-movements"] },
+            "description": "Increases product stock by the given quantity. Creates a stock movement audit record."
+          }
+        },
+        {
+          "name": "Log Stock OUT",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 3,\n  \"movementType\": \"OUT\",\n  \"reason\": \"Issued for internal use — IT department\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/stock-movements", "host": ["{{baseUrl}}"], "path": ["stock-movements"] },
+            "description": "Decreases product stock. Returns 400 if stock would go negative (negative stock prevention)."
+          }
+        },
+        {
+          "name": "Stock ADJUSTMENT (Set Exact Count)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 25,\n  \"movementType\": \"ADJUSTMENT\",\n  \"reason\": \"Physical stock count reconciliation — Q3 audit\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/stock-movements", "host": ["{{baseUrl}}"], "path": ["stock-movements"] },
+            "description": "Sets the exact stock count (absolute value, not delta). Used for physical audit corrections."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Sales Challans",
+      "description": "ERP Sales Challan module. Auto-numbered, product snapshot, and transactional stock deduction.",
+      "item": [
+        {
+          "name": "List Sales Challans (Paginated)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.length > 0) {",
+                  "    pm.collectionVariables.set('challanId', res.data[0].id);",
+                  "    console.log('✅ challanId saved:', res.data[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/sales-challans?page=1&limit=10&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales-challans"],
+              "query": [
+                { "key": "page",       "value": "1" },
+                { "key": "limit",      "value": "10" },
+                { "key": "sortBy",     "value": "createdAt" },
+                { "key": "sortOrder",  "value": "desc" },
+                { "key": "status",     "value": "DRAFT",         "disabled": true },
+                { "key": "customerId", "value": "{{customerId}}", "disabled": true },
+                { "key": "search",     "value": "",              "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Sales Challan by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/sales-challans/{{challanId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales-challans", "{{challanId}}"]
+            },
+            "description": "Returns full challan detail including customer, items (product snapshot), and creator info."
+          }
+        },
+        {
+          "name": "Create Sales Challan (DRAFT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.id) {",
+                  "    pm.collectionVariables.set('challanId', res.data.id);",
+                  "    console.log('✅ New challanId saved:', res.data.id);",
+                  "    console.log('✅ Challan Number:', res.data.challanNumber);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"status\": \"DRAFT\",\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/sales-challans", "host": ["{{baseUrl}}"], "path": ["sales-challans"] },
+            "description": "Creates a new challan in DRAFT status. Auto-generates challan number (SCH-YYYYMMDD-XXXX). Captures product snapshot (name, SKU, price) at time of creation."
+          }
+        },
+        {
+          "name": "Create Sales Challan (CONFIRMED — triggers stock deduction)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"{{customerId}}\",\n  \"status\": \"CONFIRMED\",\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 1\n    }\n  ]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/sales-challans", "host": ["{{baseUrl}}"], "path": ["sales-challans"] },
+            "description": "Creates a challan directly in CONFIRMED status. Immediately triggers transactional stock deduction. Returns 400 if insufficient stock."
+          }
+        },
+        {
+          "name": "Update Challan Status → CONFIRMED",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales-challans/{{challanId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales-challans", "{{challanId}}", "status"]
+            },
+            "description": "Transitions DRAFT → CONFIRMED. Triggers transactional stock deduction. Business rule: cannot exceed available stock."
+          }
+        },
+        {
+          "name": "Update Challan Status → DISPATCHED",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"DISPATCHED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales-challans/{{challanId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales-challans", "{{challanId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Update Challan Status → DELIVERED",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"DELIVERED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales-challans/{{challanId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales-challans", "{{challanId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Update Challan Status → CANCELLED",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CANCELLED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sales-challans/{{challanId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["sales-challans", "{{challanId}}", "status"]
+            },
+            "description": "Cancels a challan. Once CANCELLED or DELIVERED, further status changes are rejected (400)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Dashboard Analytics",
+      "description": "Real-time KPI metrics and recent activity streams.",
+      "item": [
+        {
+          "name": "Get Dashboard Metrics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwtToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard", "metrics"]
+            },
+            "description": "Returns KPI cards (Total Customers, Total Products, Today's Challans, Low Stock Alert Count, Total Inventory Value) and Recent Activity streams (last 5 challans, last 5 customers). Uses parallel Promise.all queries for high performance."
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Health Check",
+      "description": "Server health and status endpoints.",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5001/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5001",
+              "path": ["health"]
+            },
+            "description": "Returns server status, timestamp, and version. No authentication required."
+          }
+        },
+        {
+          "name": "API v1 Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": ["{{baseUrl}}"]
+            },
+            "description": "Returns the API landing page with all available route namespaces."
+          }
+        }
+      ]
+    }
+  ]
+}

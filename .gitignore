@@ -32,3 +32,21 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Prisma Generated Client (regenerated on install)
+backend/generated/
+
+# AI Tool Configuration Folders (local only)
+.agents/
+backend/.agents/
+backend/.claude/
+backend/.windsurf/
+.claude/
+.windsurf/
+
+# AI Tool Lock Files
+backend/skills-lock.json
+skills-lock.json
+
+# Prisma Adapter Config (auto-generated)
+backend/prisma.config.ts
