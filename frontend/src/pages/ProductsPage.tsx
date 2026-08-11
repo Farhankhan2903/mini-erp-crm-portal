@@ -349,15 +349,15 @@ export const ProductsPage: React.FC = () => {
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g. Dell PowerEdge Server R740"
+              placeholder="e.g. Polycab 3-Core Flexible Copper Cable 90m"
             />
 
             <Input
               label="SKU Serial Code"
               required
               value={formData.sku}
-              onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-              placeholder="e.g. SRV-DELL-740"
+              onChange={(e) => setFormData({ ...formData, sku: e.target.value.toUpperCase() })}
+              placeholder="e.g. ELEC-CBL-3C-90M"
             />
 
             <Input
@@ -365,7 +365,7 @@ export const ProductsPage: React.FC = () => {
               required
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              placeholder="e.g. Hardware / Servers"
+              placeholder="e.g. Electrical Supplies / Building Materials"
             />
 
             <Input
@@ -402,7 +402,7 @@ export const ProductsPage: React.FC = () => {
             required
             value={formData.warehouse}
             onChange={(e) => setFormData({ ...formData, warehouse: e.target.value })}
-            placeholder="e.g. Main Warehouse Bay 3"
+            placeholder="e.g. Ahmedabad Central Depot / Surat Hub / Mumbai Godown"
           />
 
           <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">

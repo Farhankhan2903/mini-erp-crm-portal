@@ -14,6 +14,7 @@ import { Modal } from '../components/common/Modal';
 import { Pagination } from '../components/common/Pagination';
 import { SearchInput } from '../components/common/SearchInput';
 import { Spinner } from '../components/common/Spinner';
+import { formatDateIN, formatPhoneIN } from '../utils/formatters';
 
 export const CustomersPage: React.FC = () => {
   const { hasRole } = useAuth();
@@ -276,15 +277,15 @@ export const CustomersPage: React.FC = () => {
                           <Building className="w-3 h-3" /> {cust.businessName}
                         </div>
                       )}
-                      {cust.gst && <div className="text-[10px] text-slate-400 font-mono mt-0.5">GST: {cust.gst}</div>}
+                      {cust.gst && <div className="text-[10px] text-slate-400 font-mono mt-0.5">GSTIN: {cust.gst}</div>}
                     </td>
 
                     <td className="py-4 px-4 space-y-1">
                       <div className="flex items-center gap-1.5 text-slate-700 font-medium">
                         <Mail className="w-3.5 h-3.5 text-slate-400" /> {cust.email}
                       </div>
-                      <div className="flex items-center gap-1.5 text-slate-600">
-                        <Phone className="w-3.5 h-3.5 text-slate-400" /> {cust.mobile}
+                      <div className="flex items-center gap-1.5 text-slate-600 font-mono">
+                        <Phone className="w-3.5 h-3.5 text-slate-400" /> {formatPhoneIN(cust.mobile)}
                       </div>
                     </td>
 
@@ -310,9 +311,9 @@ export const CustomersPage: React.FC = () => {
 
                     <td className="py-4 px-4 font-medium text-slate-700">
                       {cust.followUpDate ? (
-                        <div className="flex items-center gap-1.5 text-indigo-600">
+                        <div className="flex items-center gap-1.5 text-indigo-600 font-mono">
                           <Calendar className="w-3.5 h-3.5" />
-                          {new Date(cust.followUpDate).toLocaleDateString()}
+                          {formatDateIN(cust.followUpDate)}
                         </div>
                       ) : (
                         <span className="text-slate-400">—</span>
@@ -373,11 +374,11 @@ export const CustomersPage: React.FC = () => {
         <form onSubmit={handleFormSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Customer Name"
+              label="Customer / Business Contact Name"
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g. John Doe / Acme Corp"
+              placeholder="e.g. Patel Traders / Shree Ganesh Distributors"
             />
             <Input
               label="Email Address"
@@ -385,26 +386,26 @@ export const CustomersPage: React.FC = () => {
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="email@company.com"
+              placeholder="contact@pateltraders.in"
             />
             <Input
-              label="Mobile Number"
+              label="Mobile Number (10 Digits)"
               required
               value={formData.mobile}
               onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-              placeholder="+91 9876543210"
+              placeholder="e.g. 9825012345"
             />
             <Input
               label="Business Name"
               value={formData.businessName}
               onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-              placeholder="Optional company name"
+              placeholder="e.g. Patel Trading Company Pvt Ltd"
             />
             <Input
-              label="GST Number"
+              label="GSTIN (15 Digits)"
               value={formData.gst}
-              onChange={(e) => setFormData({ ...formData, gst: e.target.value })}
-              placeholder="27AAAAA0000A1Z5"
+              onChange={(e) => setFormData({ ...formData, gst: e.target.value.toUpperCase() })}
+              placeholder="e.g. 24AAACP1234A1Z5"
             />
             <Select
               label="Customer Type"
@@ -436,11 +437,11 @@ export const CustomersPage: React.FC = () => {
           </div>
 
           <TextArea
-            label="Address"
+            label="Address (City, District, State, PIN Code)"
             rows={2}
             value={formData.address}
             onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-            placeholder="Office / delivery address details"
+            placeholder="e.g. 102, GIDC Industrial Estate, Odhav, Ahmedabad, Gujarat - 382415"
           />
 
           <TextArea

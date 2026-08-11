@@ -265,15 +265,21 @@ export const CreateChallanPage: React.FC = () => {
           </div>
 
           {/* Totals Summary */}
-          <div className="flex items-center justify-between pt-4 border-t border-slate-100 bg-slate-50/50 p-4 rounded-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-100 bg-slate-50/80 p-5 rounded-2xl">
             <div>
               <p className="text-xs text-slate-500 font-semibold">Total Line Quantity</p>
               <p className="text-lg font-black text-slate-900">{totalQuantity} items</p>
             </div>
 
-            <div className="text-right">
-              <p className="text-xs text-slate-500 font-semibold">Estimated Total Amount</p>
-              <p className="text-xl font-black text-indigo-600">{formatINR(estimatedTotalPrice)}</p>
+            <div className="text-right space-y-1">
+              <p className="text-xs text-slate-500 font-medium">
+                Subtotal (Excl. Tax): <span className="font-bold text-slate-800">{formatINR(estimatedTotalPrice)}</span>
+              </p>
+              <p className="text-xs text-slate-500 font-medium">
+                Estimated GST (18%): <span className="font-bold text-amber-600">{formatINR(estimatedTotalPrice * 0.18)}</span>
+              </p>
+              <p className="text-xs font-bold text-slate-600 uppercase tracking-wider">Grand Total (Incl. GST)</p>
+              <p className="text-2xl font-black text-indigo-600">{formatINR(estimatedTotalPrice * 1.18)}</p>
             </div>
           </div>
         </Card>

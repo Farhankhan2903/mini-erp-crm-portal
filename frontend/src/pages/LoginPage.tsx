@@ -53,7 +53,7 @@ export const LoginPage: React.FC = () => {
           </div>
           <h2 className="text-2xl font-black tracking-tight text-slate-900">Fundsroom Infotech</h2>
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mt-1">
-            Mini ERP + CRM Operations Portal
+            Indian B2B ERP + CRM Operations Portal
           </p>
         </div>
 

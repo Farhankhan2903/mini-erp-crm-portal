@@ -13,6 +13,7 @@ import { Select } from '../components/common/Select';
 import { Modal } from '../components/common/Modal';
 import { Pagination } from '../components/common/Pagination';
 import { Spinner } from '../components/common/Spinner';
+import { formatDateIN } from '../utils/formatters';
 
 export const InventoryPage: React.FC = () => {
   const { hasRole } = useAuth();
@@ -212,8 +213,8 @@ export const InventoryPage: React.FC = () => {
               ) : (
                 movements.map((mov) => (
                   <tr key={mov.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-4 px-6 text-slate-600">
-                      {new Date(mov.timestamp || mov.createdAt).toLocaleString()}
+                    <td className="py-4 px-6 text-slate-600 font-mono">
+                      {formatDateIN(mov.timestamp || mov.createdAt)}
                     </td>
 
                     <td className="py-4 px-4">

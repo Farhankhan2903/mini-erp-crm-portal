@@ -17,7 +17,7 @@ import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
 import { Spinner } from '../components/common/Spinner';
 import { useAuth } from '../context/AuthContext';
-import { formatINR } from '../utils/formatters';
+import { formatINR, formatDateIN } from '../utils/formatters';
 
 export const DashboardPage: React.FC = () => {
   const { hasRole } = useAuth();
@@ -176,8 +176,8 @@ export const DashboardPage: React.FC = () => {
                       <p className="text-xs font-semibold text-slate-900">
                         {challan.totalQuantity} items
                       </p>
-                      <p className="text-[10px] text-slate-400">
-                        {new Date(challan.createdAt).toLocaleDateString()}
+                      <p className="text-[10px] text-slate-400 font-mono">
+                        {formatDateIN(challan.createdAt)}
                       </p>
                     </div>
                     <Badge

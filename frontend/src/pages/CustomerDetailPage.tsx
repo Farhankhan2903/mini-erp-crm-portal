@@ -22,6 +22,7 @@ import { Card } from '../components/common/Card';
 import { Input, TextArea } from '../components/common/Input';
 import { Modal } from '../components/common/Modal';
 import { Spinner } from '../components/common/Spinner';
+import { formatDateIN, formatPhoneIN } from '../utils/formatters';
 
 export const CustomerDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -148,14 +149,14 @@ export const CustomerDetailPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-indigo-400" /> {customer.email}
             </div>
-            <div className="flex items-center gap-2">
-              <Phone className="w-4 h-4 text-indigo-400" /> {customer.mobile}
+            <div className="flex items-center gap-2 font-mono">
+              <Phone className="w-4 h-4 text-indigo-400" /> {formatPhoneIN(customer.mobile)}
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-indigo-400" /> Next Follow-Up:{' '}
               {customer.followUpDate ? (
-                <span className="font-bold text-amber-300">
-                  {new Date(customer.followUpDate).toLocaleDateString()}
+                <span className="font-bold text-amber-300 font-mono">
+                  {formatDateIN(customer.followUpDate)}
                 </span>
               ) : (
                 'None scheduled'
@@ -203,8 +204,8 @@ export const CustomerDetailPage: React.FC = () => {
                           {new Date(note.createdAt).toLocaleString()}
                         </span>
                         {note.followUpDate && (
-                          <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                            Rescheduled: {new Date(note.followUpDate).toLocaleDateString()}
+                          <span className="text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 font-mono">
+                            Rescheduled: {formatDateIN(note.followUpDate)}
                           </span>
                         )}
                       </div>
@@ -255,9 +256,9 @@ export const CustomerDetailPage: React.FC = () => {
                 <tbody className="divide-y divide-slate-100 font-medium">
                   {customer.salesChallans.map((ch: any) => (
                     <tr key={ch.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="py-3 px-3 font-bold text-indigo-600">{ch.challanNumber}</td>
-                      <td className="py-3 px-3 text-slate-600">
-                        {new Date(ch.createdAt).toLocaleDateString()}
+                      <td className="py-3 px-3 font-bold text-indigo-600 font-mono">{ch.challanNumber}</td>
+                      <td className="py-3 px-3 text-slate-600 font-mono">
+                        {formatDateIN(ch.createdAt)}
                       </td>
                       <td className="py-3 px-3 text-slate-800 font-semibold">{ch.totalQuantity} items</td>
                       <td className="py-3 px-3 text-right">

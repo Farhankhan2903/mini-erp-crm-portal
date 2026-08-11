@@ -29,6 +29,7 @@ export class CustomerRepository {
         { mobile:       { contains: term } },
         { businessName: { contains: term } },
         { gst:          { contains: term } },
+        { address:      { contains: term } },
       ];
     }
 

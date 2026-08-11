@@ -13,7 +13,7 @@ import { Modal } from '../components/common/Modal';
 import { Pagination } from '../components/common/Pagination';
 import { SearchInput } from '../components/common/SearchInput';
 import { Spinner } from '../components/common/Spinner';
-import { formatINR } from '../utils/formatters';
+import { formatINR, formatDateIN } from '../utils/formatters';
 
 export const SalesChallansPage: React.FC = () => {
   const { hasRole } = useAuth();
@@ -198,8 +198,8 @@ export const SalesChallansPage: React.FC = () => {
                       {ch.totalQuantity} items
                     </td>
 
-                    <td className="py-4 px-4 text-slate-600">
-                      {new Date(ch.createdAt).toLocaleDateString()}
+                    <td className="py-4 px-4 text-slate-600 font-mono">
+                      {formatDateIN(ch.createdAt)}
                     </td>
 
                     <td className="py-4 px-6 text-right">
