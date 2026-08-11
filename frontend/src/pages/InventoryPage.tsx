@@ -57,7 +57,7 @@ export const InventoryPage: React.FC = () => {
           setPagination(res.pagination);
         }
       }
-    } catch (_err) {
+    } catch {
       // Handled via interceptor
     } finally {
       setLoading(false);
@@ -73,7 +73,7 @@ export const InventoryPage: React.FC = () => {
           setFormData((prev) => ({ ...prev, productId: res.data[0].id }));
         }
       }
-    } catch (_err) {
+    } catch {
       //
     }
   };

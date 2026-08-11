@@ -21,7 +21,7 @@ graph TB
     end
 
     subgraph Backend["⚙️ Backend API (Express + TypeScript)"]
-        MW["Middlewares<br/>Helmet • CORS • Morgan • JWT Auth • Zod Validate"]
+        MW["Middlewares<br/>Helmet • CORS • Compression • RateLimit • Morgan • JWT Auth • Zod Validate"]
         RT["Routes Layer<br/>/api/v1/auth | /customers | /products<br/>/stock-movements | /sales-challans | /dashboard"]
         CT["Controllers<br/>(Request/Response Handlers)"]
         BL["Services / Business Logic<br/>AuthService • CustomerService • ProductService<br/>StockService • ChallanService • DashboardService"]

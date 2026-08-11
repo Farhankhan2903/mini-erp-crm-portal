@@ -219,11 +219,26 @@ mini-erp-crm-portal/
 
 ---
 
+### 🧪 Automated Testing & Quality Assurance
+- **Backend**: Jest + Supertest integration test suite covering Auth, Customers, Products, Stock Movements, Sales Challans, and Dashboard metrics.
+- **Frontend**: Vitest + React Testing Library unit testing setup.
+- **Unified Workspace Command**: `npm test` runs full backend and frontend test suites.
+- **ESLint & Code Quality**: 0 errors, 0 warnings across full monorepo (`npm run lint`).
+
+---
+
 ## ⚡ Quick Start
 
 ### Prerequisites
 - Node.js 18+ and npm 9+
 - Git
+
+### Running Full Test Suite & Linting
+```bash
+npm test         # Runs both Backend (Jest) and Frontend (Vitest) test suites
+npm run lint     # Verifies 0 ESLint errors and 0 warnings
+npm run build    # Compiles both Backend (tsc) and Frontend (vite build)
+```
 
 ### One-Step Startup (Recommended)
 ```bash

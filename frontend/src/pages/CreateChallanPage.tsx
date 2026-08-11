@@ -50,7 +50,7 @@ export const CreateChallanPage: React.FC = () => {
             setItems([{ productId: prodRes.data[0].id, quantity: 1 }]);
           }
         }
-      } catch (_err) {
+      } catch {
         showToast('error', 'Failed to load master customer and product data');
       } finally {
         setLoadingData(false);

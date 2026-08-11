@@ -72,7 +72,7 @@ export const ProductsPage: React.FC = () => {
           setPagination(res.pagination);
         }
       }
-    } catch (_err) {
+    } catch {
       // Error handled via interceptor
     } finally {
       setLoading(false);

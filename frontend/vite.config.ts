@@ -20,4 +20,11 @@ export default defineConfig({
       },
     },
   },
+  // @ts-expect-error vitest config block extension
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: [],
+  },
 });
+

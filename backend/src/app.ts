@@ -2,13 +2,38 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
 import swaggerUi from 'swagger-ui-express';
+import compression from 'compression';
 import { swaggerSpec } from './config/swagger';
 import routes from './routes';
 import { errorHandler } from './middlewares/errorHandler';
 import { env } from './config/env';
 
 const app: Application = express();
+
+app.use(compression());
+
+// Rate limiter: 300 requests per 15 minutes per IP
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  skip: () => env.NODE_ENV === 'test',
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests from this IP, please try again after 15 minutes.' },
+});
+
+// Strict rate limiter for auth endpoints: 20 requests per 15 minutes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  skip: () => env.NODE_ENV === 'test',
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many authentication attempts, please try again after 15 minutes.' },
+});
+
 
 // Allowed origins — in production, restrict to your frontend domain
 const allowedOrigins: string[] = env.NODE_ENV === 'production'
@@ -36,9 +61,13 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+
+// Apply rate limiting
+app.use('/api/v1/auth/login', authLimiter);
+app.use('/api/v1', generalLimiter);
 
 // Interactive Swagger OpenAPI Documentation Routes (/docs & /api-docs)
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

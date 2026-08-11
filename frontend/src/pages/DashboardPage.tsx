@@ -32,7 +32,7 @@ export const DashboardPage: React.FC = () => {
       if (res.success && res.data) {
         setData(res.data);
       }
-    } catch (_error) {
+    } catch {
       // Handled via axios interceptor or toast
     } finally {
       setLoading(false);

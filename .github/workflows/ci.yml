@@ -8,8 +8,12 @@ on:
 
 jobs:
   backend-ci:
-    name: Backend Build & Typecheck
+    name: Backend Lint, Test & Build
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "file:./dev.db"
+      JWT_SECRET: "ci-secret-key-testing-minierp-12345"
+      NODE_ENV: "test"
 
     steps:
       - name: Checkout Code
@@ -32,18 +36,23 @@ jobs:
           cd backend
           npx prisma generate
 
-      - name: TypeScript Typecheck
+      - name: ESLint Linting Check
         run: |
           cd backend
-          npx tsc --noEmit
+          npm run lint
 
-      - name: Compile Backend Production Bundle
+      - name: TypeScript Typecheck & Build
         run: |
           cd backend
           npm run build
 
+      - name: Run Backend Integration Tests
+        run: |
+          cd backend
+          npm test
+
   frontend-ci:
-    name: Frontend Build & Typecheck
+    name: Frontend Lint, Test & Build
     runs-on: ubuntu-latest
 
     steps:
@@ -62,7 +71,17 @@ jobs:
           cd frontend
           npm install --legacy-peer-deps
 
-      - name: Compile Frontend Vite Bundle
+      - name: ESLint Linting Check
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Run Frontend Vitest Unit Tests
+        run: |
+          cd frontend
+          npm test
+
+      - name: Compile Frontend Vite Production Bundle
         run: |
           cd frontend
           npm run build

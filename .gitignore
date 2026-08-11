@@ -48,5 +48,3 @@ backend/.windsurf/
 backend/skills-lock.json
 skills-lock.json
 
-# Prisma Adapter Config (auto-generated)
-backend/prisma.config.ts

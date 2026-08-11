@@ -7,9 +7,15 @@
     "dev:frontend": "npm --prefix frontend run dev",
     "build:backend": "npm --prefix backend run build",
     "build:frontend": "npm --prefix frontend run build",
-    "build": "cd frontend && npm install --legacy-peer-deps && npm run build",
+    "build": "npm run build:backend && cd frontend && npm install --legacy-peer-deps && npm run build",
     "start:backend": "npm --prefix backend start",
     "start:frontend": "npm --prefix frontend run preview",
-    "start": "npm run start:backend"
+    "start": "npm run start:backend",
+    "test:backend": "npm --prefix backend test",
+    "test:frontend": "npm --prefix frontend test",
+    "test": "npm run test:backend && npm run test:frontend",
+    "lint:backend": "npm --prefix backend run lint",
+    "lint:frontend": "npm --prefix frontend run lint",
+    "lint": "npm run lint:backend && npm run lint:frontend"
   }
 }

@@ -19,9 +19,10 @@ export const authenticateUser = (req: Request, res: Response, next: NextFunction
     const decoded = jwt.verify(token, env.JWT_SECRET) as AuthUser;
     req.user = decoded;
     next();
-  } catch (_error) {
+  } catch {
     sendError(res, 'Invalid or expired authentication token', 401);
   }
+
 };
 
 export const authorizeRoles = (...allowedRoles: Role[]) => {

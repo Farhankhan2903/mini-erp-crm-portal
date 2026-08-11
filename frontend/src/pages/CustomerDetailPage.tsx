@@ -46,7 +46,7 @@ export const CustomerDetailPage: React.FC = () => {
       if (res.success && res.data) {
         setCustomer(res.data);
       }
-    } catch (_err) {
+    } catch {
       // Error handled via interceptor
     } finally {
       setLoading(false);

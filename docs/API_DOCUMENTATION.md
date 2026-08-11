@@ -8,6 +8,11 @@ Authorization: Bearer <jwt_token>
 Content-Type: application/json
 ```
 
+### Rate Limiting & Protection Rules
+- **Authentication Rate Limit (`/auth/login`)**: 20 requests per 15-minute window per IP.
+- **General API Rate Limit (`/api/v1/*`)**: 300 requests per 15-minute window per IP.
+- **Payload Compression**: All JSON responses are automatically gzipped via `compression` middleware.
+
 ---
 
 ## Standard Response Format

@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(res.data);
         localStorage.setItem('minierp_user', JSON.stringify(res.data));
       }
-    } catch (_error) {
+    } catch {
       logout();
     } finally {
       setIsLoading(false);

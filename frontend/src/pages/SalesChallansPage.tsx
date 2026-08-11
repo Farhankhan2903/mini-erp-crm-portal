@@ -55,7 +55,7 @@ export const SalesChallansPage: React.FC = () => {
           setPagination(res.pagination);
         }
       }
-    } catch (_err) {
+    } catch {
       //
     } finally {
       setLoading(false);
