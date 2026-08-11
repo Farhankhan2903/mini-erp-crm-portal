@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Mini ERP + CRM Operations Portal",
   "scripts": {
+    "frontend": "npm --prefix frontend run dev",
+    "backend": "npm --prefix backend run dev",
     "dev:backend": "npm --prefix backend run dev",
     "dev:frontend": "npm --prefix frontend run dev",
     "build:backend": "npm --prefix backend run build",
