@@ -1,7 +1,13 @@
 import axios from 'axios';
 
+const defaultApiUrl =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? 'https://mini-erp-crm-api.onrender.com/api/v1'
+    : 'http://localhost:5001/api/v1');
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5001/api/v1',
+  baseURL: defaultApiUrl,
   headers: {
     'Content-Type': 'application/json',
   },

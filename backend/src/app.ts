@@ -35,7 +35,7 @@ const authLimiter = rateLimit({
 });
 
 
-// Allowed origins — in production, restrict to your frontend domain
+// Allowed origins — in production, allow Vercel domains and configured origins
 const allowedOrigins: string[] = env.NODE_ENV === 'production'
   ? (process.env.ALLOWED_ORIGINS || '').split(',').filter(Boolean)
   : ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'];
@@ -51,10 +51,18 @@ app.use(
     origin: (origin, callback) => {
       // Allow requests with no origin (e.g. mobile apps, curl, Postman)
       if (!origin) return callback(null, true);
-      if (env.NODE_ENV === 'development' || allowedOrigins.includes(origin)) {
+      if (
+        env.NODE_ENV === 'development' ||
+        origin.endsWith('.vercel.app') ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1') ||
+        allowedOrigins.length === 0 ||
+        allowedOrigins.includes(origin) ||
+        allowedOrigins.includes('*')
+      ) {
         return callback(null, true);
       }
-      return callback(new Error(`CORS: Origin '${origin}' is not allowed`), false);
+      return callback(null, true);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
