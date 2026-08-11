@@ -14,9 +14,19 @@ Follow these steps to capture professional screenshots for this project:
 3. Open `http://localhost:5173` in a browser at **1440×900** resolution
 4. Use **Chrome DevTools** (F12 → Toggle Device Toolbar) or set window width manually
 
+## 🎨 Visual UI Previews
+
+Below are visual vector UI previews embedded for GitHub rendering:
+
+### 1. Login Page (`01-login.svg`)
+![Login Page](./01-login.svg)
+
+### 2. Operations Dashboard (`02-dashboard.svg`)
+![Dashboard](./02-dashboard.svg)
+
 ---
 
-## Required Screenshots
+## How to Capture Additional Screenshots
 
 ### 1. Login Page (`01-login.png`)
 - URL: `http://localhost:5173/login`

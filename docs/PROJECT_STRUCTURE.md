@@ -43,20 +43,12 @@ backend/
 │   │   └── swagger.ts          ← Swagger/OpenAPI 3.0 spec configuration (jsdoc-based)
 │   │
 │   ├── controllers/            ← Thin HTTP layer — parses request, calls service, sends response
-│   │   ├── auth.controller.ts
-│   │   ├── customer.controller.ts
-│   │   ├── product.controller.ts
-│   │   ├── stock.controller.ts
-│   │   ├── challan.controller.ts
-│   │   └── dashboard.controller.ts
-│   │
+│   ├── interfaces/             ← Interface contracts for repositories and services
+│   ├── repositories/           ← Repository pattern layer — decouples database ORM queries
 │   ├── services/               ← Business logic layer — all database operations and rules
-│   │   ├── auth.service.ts     ← Login (bcrypt compare), register (bcrypt hash), profile
-│   │   ├── customer.service.ts ← Customer CRUD, paginated search, follow-up notes
-│   │   ├── product.service.ts  ← Product CRUD, low-stock filter, SKU uniqueness
-│   │   ├── stock.service.ts    ← Stock movement logging (IN/OUT/ADJUSTMENT) with atomic updates
-│   │   ├── challan.service.ts  ← Challan creation, auto-numbering, product snapshot, stock deduction
-│   │   └── dashboard.service.ts← Parallel Promise.all metrics aggregation
+│   ├── __tests__/              ← Jest + Supertest API and integration test suites
+│   │   ├── api.test.ts
+│   │   └── integration.test.ts
 │   │
 │   ├── middlewares/
 │   │   ├── auth.ts             ← JWT verify middleware (authenticateUser) + role guard (authorizeRoles)
@@ -121,6 +113,10 @@ frontend/
     │   ├── DashboardLayout.tsx ← Sidebar + header layout shell (Outlet-based)
     │   └── ProtectedRoute.tsx  ← Redirects unauthenticated users to /login
     │
+    ├── hooks/                  ← Custom React hooks (useDebounce, usePagination, useDisclosure)
+    ├── __tests__/              ← Vitest + React Testing Library component unit tests
+    │   └── Button.test.tsx
+    │
     ├── components/
     │   └── common/             ← Reusable primitive components
     │       ├── Button.tsx      ← Primary/outline/ghost variants, loading state, icon support
@@ -132,7 +128,9 @@ frontend/
     │       ├── Spinner.tsx     ← Loading spinner (sm/md/lg sizes)
     │       ├── Pagination.tsx  ← Pagination controls with prev/next/page numbers
     │       ├── SearchInput.tsx ← Debounced search input component
-    │       └── ToastContainer.tsx ← Auto-dismissing toast notification stack
+    │       ├── ToastContainer.tsx ← Auto-dismissing toast notification stack
+    │       ├── ErrorBoundary.tsx  ← React Error Boundary error fallback component
+    │       └── Skeleton.tsx    ← Table and Card skeleton loaders
     │
     ├── context/
     │   ├── AuthContext.tsx     ← Auth state (user, token, login, logout, hasRole)

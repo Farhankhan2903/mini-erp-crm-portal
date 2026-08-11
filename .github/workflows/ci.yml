@@ -23,8 +23,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          cache-dependency-path: backend/package-lock.json
 
       - name: Install Backend Dependencies
         run: |
@@ -36,12 +34,18 @@ jobs:
           cd backend
           npx prisma generate
 
+      - name: Prepare Test Database Schema & Seed Data
+        run: |
+          cd backend
+          npx prisma db push
+          npx tsx prisma/seed.ts
+
       - name: ESLint Linting Check
         run: |
           cd backend
           npm run lint
 
-      - name: TypeScript Typecheck & Build
+      - name: TypeScript Build Check
         run: |
           cd backend
           npm run build
@@ -63,8 +67,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
 
       - name: Install Frontend Dependencies
         run: |

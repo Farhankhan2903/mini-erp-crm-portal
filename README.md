@@ -29,6 +29,8 @@
 - [Running Locally](#-running-locally)
 - [Deployment](#-deployment)
 - [API Documentation](#-api-documentation)
+- [Postman Collection](#-postman-collection)
+- [Screenshots](#-screenshots)
 - [Demo Credentials](#-demo-credentials)
 - [Known Limitations](#-known-limitations)
 - [Future Improvements](#-future-improvements)
@@ -351,9 +353,27 @@ See [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md) for the complete step-by-step gui
 
 - **Interactive Swagger UI**: http://localhost:5001/docs
 - **Full API Reference**: [docs/API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md)
-- **Postman Collection**: [docs/postman/Mini-ERP-CRM.postman_collection.json](./docs/postman/Mini-ERP-CRM.postman_collection.json)
 
-Import the Postman collection, run **Login — Admin** first, and all subsequent requests will automatically use the saved JWT token.
+---
+
+## 📮 Postman Collection
+
+The project includes a complete, pre-configured Postman Collection:
+- **File Location**: [`docs/postman/Mini-ERP-CRM.postman_collection.json`](./docs/postman/Mini-ERP-CRM.postman_collection.json)
+- **Included Endpoints**: 25+ requests covering Auth, Customer CRM, Products Catalog, Stock Movements, Sales Challans, and Dashboard Analytics.
+- **Auto JWT Extraction**: The `Login — Admin` request automatically captures the JWT token in collection variables for seamless testing.
+
+---
+
+## 📸 Screenshots
+
+### 🔐 Login Page
+![Login Page](./docs/screenshots/01-login.svg)
+
+### 📊 Operations Dashboard
+![Operations Dashboard](./docs/screenshots/02-dashboard.svg)
+
+*For more details on capturing and viewing all screenshots, see [docs/screenshots/README.md](./docs/screenshots/README.md).*
 
 ---
 
