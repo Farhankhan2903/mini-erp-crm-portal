@@ -10,7 +10,7 @@ This guide covers deploying the complete stack to **Neon PostgreSQL** + **Render
 |:---|:---|:---|
 | Database | Neon.tech (Serverless PostgreSQL) | `postgresql://...@*.neon.tech/...` |
 | Backend API | Render (Node.js Web Service) | `https://mini-erp-crm-api.onrender.com` |
-| Frontend SPA | Vercel (Static CDN) | `https://mini-erp-crm.vercel.app` |
+| Frontend SPA | Vercel (Static CDN) | `https://mini-erp-crm-portal.vercel.app` |
 
 ---
 
@@ -113,7 +113,7 @@ curl https://mini-erp-crm-api.onrender.com/api/v1
 # Open: https://mini-erp-crm-api.onrender.com/docs
 
 # 4. Frontend
-# Open: https://mini-erp-crm.vercel.app
+# Open: https://mini-erp-crm-portal.vercel.app
 # Login with: admin@minierp.com / Admin@123
 ```
 
