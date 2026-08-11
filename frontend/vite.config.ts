@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(import.meta.dirname, './src'),
+      '@': path.resolve(process.cwd(), './src'),
     },
   },
   server: {
@@ -20,11 +20,4 @@ export default defineConfig({
       },
     },
   },
-  // @ts-expect-error vitest config block extension
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: [],
-  },
 });
-
